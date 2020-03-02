@@ -1,0 +1,1 @@
+"use strict";var lazyLoading=function(){var n=$(window),c=$("img[data-src]"),t=function(){for(var t=n.scrollTop(),r=n.height(),a=0;a<c.length;a++){var o=c.eq(a);o.offset().top-t<r&&o.attr("src")!=o.attr("data-src")&&(o.attr("src",o.attr("data-src")),c.splice(a,1),a--)}c.length<=0&&(window.onscroll=null)};(window.onscroll=t)()};

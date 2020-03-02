@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=X-UA-Compatible content="ie=edge"><title>登录</title><link rel=stylesheet href=../css/base_px.css><link rel=stylesheet href=../css/login.css><script src=../js/jquery-3.4.0.js></script><script src=../js/jQuery.md5.js></script><script src=../js/Cookie.js></script></head><body><header class="header container clearfix"><div class=header-list1><h2 class=header-logo><a href=http://www.360kad.com><img alt=欢迎来到名鞋库网上鞋城! src=//images.s.cn/images/css/newlogo.png></a></h2><p class=header-notice><img src=https://res.360kad.com/theme/default/img/user/2015/autoSlogo.gif></p></div></header><div style=background-color:red;height:2px></div><div class=wrapper><div class=container><div class=container-left><img width=591 height=599 src=//images.s.cn/images/2012/1024/2016dl.jpg></div><div class=container-right><div class=login-box><h3 class=title>欢迎登录</h3><div class="input-box clearfix"><i class=user-icon></i><input type=text class=username placeholder=请输入用户名/邮箱></div><p class="error clearfix"><i class=prompt-icon></i> <span class=error-text>登录名不能为空！</span></p><div class="input-box clearfix"><i class=lock-icon></i><input type=password class=password placeholder=请输入您的密码></div><p class="error clearfix"><i class=prompt-icon></i> <span class=error-text>密码长度应在6-20位之间！</span></p><div class="verify clearfix"><div class=input-box><i class=lock-icon></i> <input type=text placeholder=请输入验证码 class=verify-input></div><img class=verify-img src=http://localhost/users/verifyImg alt=""></div><p class="error clearfix"><i class=prompt-icon></i> <span class=error-text>验证码错误</span></p><div class=check-box><input type=checkbox id=login-checkbox> <label for=login-checkbox>2周内免登录</label></div><a href=# class=btn>登&nbsp;&nbsp;&nbsp;&nbsp;录</a><p class="forget clearfix"><a href=./register.html class="reg fl">免费注册></a> <a href=# class="fp fr">忘记密码？</a></p></div></div></div></div><script>$(function () {
+
+      //自动登录
+      let userInfo = $.getItem("userInfo") || "{}";
+      let cookie = JSON.parse(userInfo);
+      if (cookie.username && cookie.password) {
+        $.post({
+          url: "http://localhost/users/autologin",
+          success(res) {
+            if (res.status == 1) {
+              location.href = "http://localhost";
+            } else {
+              alert(res.msg);
+              $.removeItem("userInfo");
+            }
+          }
+        })
+      }
+
+
+      let msgs = $(".error"),
+        username = $(".username"),
+        password = $(".password"),
+        verify = $(".verify-input");
+
+      //检查用户框是否合法
+      function checkUsername() {
+        if (username.val().trim() === "") {
+          msgs.eq(0).addClass("show").children(".error-text").text("用户名不能为空");
+          return false;
+        } else {
+          msgs.eq(0).removeClass("show");
+          return true;
+        }
+      }
+
+      //检查密码框是否合法
+      function checkPassword() {
+        let len = password.val().trim().length;
+        if (len < 6 || len > 20) {
+          msgs.eq(1).addClass("show").children(".error-text").text("密码长度应在6-20位之间！");
+          return false;
+        } else {
+          msgs.eq(1).removeClass("show");
+          return true;
+        }
+      }
+
+      //检查验证码框是否合法
+      function checkVerify() {
+        let len = verify.val().trim().length;
+        if (len == 0) {
+          msgs.eq(2).addClass("show").children(".error-text").text("验证码不能为空");
+          return false;
+        } else {
+          msgs.eq(2).removeClass("show");
+          return true;
+        }
+      }
+
+
+      //点击登录事件
+      $(".btn").click(function (e) {
+        e.preventDefault();
+        if (!checkUsername() || !checkPassword() || !checkVerify()) {
+          return;
+        }
+        let uvalue = username.val().trim(),
+          pvalue = $.md5(password.val().trim()),
+          vvalue = verify.val().trim();
+        $.post({
+          url: "http://localhost/users/login",
+          data: {
+            username: uvalue,
+            password: pvalue,
+            verify: vvalue
+          },
+          success(res) {
+            if (res.status == 1) {
+              if ($("#login-checkbox").prop("checked")) {
+                $.setItem("userInfo", JSON.stringify({
+                  username: uvalue,
+                  password: pvalue
+                }, 14));
+              }
+              let originDetail = $.getItem("originDetail");
+              if (originDetail) {
+                $.removeItem("originDetail");
+                location.href = "http://localhost/html/detail.html?id=" + originDetail;
+              } else {
+                location.href = "http://localhost/";
+              }
+
+            } else if (res.status == 0) {
+              msgs.eq(1).addClass("show").children(".error-text").text(res.msg);
+            } else if (res.status == -1) {
+              msgs.eq(0).addClass("show").children(".error-text").text(res.msg);
+            } else {
+              msgs.eq(2).addClass("show").children(".error-text").text(res.msg);
+            }
+          }
+        })
+      })
+
+
+      //点击图形验证码切换图片
+      $(".verify-img").click(function () {
+        $(this).attr("src", "http://localhost/users/verifyImg?time=" + new Date().getTime());
+      })
+
+      //用户输入框的失去焦点事件
+      username.blur(checkUsername);
+
+      //密码输入框的失去焦点事件
+      password.blur(checkPassword);
+
+      //验证码框失去焦点
+      verify.blur(checkVerify);
+    })</script></body></html>

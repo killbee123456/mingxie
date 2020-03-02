@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=X-UA-Compatible content="ie=edge"><title>首页</title><link rel=stylesheet href=../css/base_px.css><link rel=stylesheet href=../css/header.css><link rel=stylesheet href=../css/footer.css><link rel=stylesheet href=../css/sider.css><link rel=stylesheet href=../css/index.css><link rel=stylesheet href=../css/banner.css><link rel=stylesheet href=../lib/swiper/css/swiper.min.css><script src=../lib/swiper/js/swiper.></script><script src=../js/Banner.js></script><script src=../js/jquery-3.4.0.js></script><script src=../js/Cookie.js></script><script src=../js/template.js></script><script src=../js/lazyload.js></script><script src=../js/utils.js></script></head><body><header><div class=top-nav><div class="container clearfix"><ul class=nav><li class=no-login><a href=http://localhost/html/login.html>欢迎登录名鞋库</a> <a href=http://localhost/html/register.html>免费注册</a></li><li class=logined><span id=uname>欢迎您，<a style=color:#c00>qilong1</a>！</span> <a href=# class=exit>[退出]</a></li><script>$(".exit").click(function (e) {
+            e.preventDefault();
+            $.removeItem("userInfo");
+            $.get({
+              url: "http://localhost/users/logout",
+              success(res) {
+                location.reload();
+              }
+            })
+  
+          })</script><li class=mine><a href=#>我的名鞋库</a><i class=triangle></i><div class=mask></div><ul><li><a href=#>我的订单</a></li><li><a href=#>我的积分</a></li><li><a href=#>优惠券</a></li><li><a href=#>商品收藏</a></li><li><a href=#>收货地址</a></li><li><a href=#>密码管理</a></li></ul></li><li class=phone><a href=#>手机名鞋库</a><i class=triangle></i><div class=mask></div><ul><li><img style=margin-right:10px src=http://images.s.cn/images/css/201410081165.png alt=""></li><li><img src=https://images.s.cn/images/css/201410081168.png alt=""></li></ul></li><li class=star><a href=#>收藏名鞋库</a></li><li class=tel><img src=//images.s.cn/statics/transparent.gif style=background:url(//images.s.cn/images/2012/1024/201403041003.png) width=124 height=16></li></ul></div></div><div class="logo container clearfix"><h2><a href=http://localhost><img src=//images.s.cn/statics/transparent.gif alt=""></a></h2><div class=logo-right><div class=search><div class=search-box><input type=text placeholder=篮球鞋><ul class=data-list><li>跑步鞋</li><li>跑步鞋</li></ul></div><a href=# class=search-btn>搜索</a><script>$(function () {
+            let wd = "";
+            let data = [];
+            let id = null;
+            let list = $(".data-list");
+            let searchBtn = $(".search-btn");
+            let searchInput = $(".search-box input");
+            searchInput.keyup(function (e) {
+              wd = $(this).val().trim();
+              if (wd != "") {
+                $.get({
+                  url: "http://localhost/commodities/search",
+                  data: { wd },
+                  success(res) {
+                    if (res.status == 1) {
+                      getList(res.data);
+                    }
+                  }
+                })
+              } else {
+                list.hide();
+              }
+            })
+  
+            function getList(data) {
+              if (data.length == 0) {
+                list.hide();
+                return;
+              } else {
+                list.show();
+              }
+              let html = data.map(ele => {
+                return `<li>${ele.name}</li>`;
+              }).join("");
+              list.html(html);
+            }
+  
+            //点击li
+            list.on("click", "li", function () {
+              searchInput.val($(this).text());
+              list.hide();
+            })
+            //点击搜索
+            searchBtn.click(function (e) {
+              let wd = searchInput.val().trim();
+              if (wd == "") {
+                alert("请输入关键字");
+                return;
+              }
+              e.preventDefault();
+              $.get({
+                url: "http://localhost/commodities/search",
+                data: { wd },
+                success(res) {
+                  if (res.status == 1) {
+                    location.href = "http://localhost/html/list.html?classId=" + res.data[0].id
+                  } else {
+                    alert(res.msg);
+                    return;
+                  }
+  
+                }
+              })
+            })
+          })</script><div class=hot>热搜： <a href="http://localhost/html/list.html?classId=2">跑步鞋 </a><a href="http://localhost/html/list.html?classId=1">休闲鞋 </a><a href=#>篮球鞋 </a><a href=#>卫衣外套 </a><a href=#>运动长裤</a></div></div><div class=shop-cart><a href=http://localhost/html/shopCart.html>购物车<span class=cart-num>0</span>件</a></div></div></div><div class=commodity-list><ul class=nav-list><li class=nav-list2></li><li class=nav-list3><a target=_blank href=https://www.s.cn/page-pc_yyzz.html><img src=//images.s.cn/images/20190108/zp.png style=height:33px></a></li></ul></div></header><div class=sider><div class=hot-activity><i class=sider-logo></i><p class=txt>热门活动</p></div><div class=brand-class><i class=sider-logo></i><p class=txt>品牌分类</p></div><div class="cart sider-logo"><a href=http://localhost/html/shopCart.html style=display:block><div class=cart-border></div><div class=cart-txt style=right:47px>购物车<div class=jian>◆</div></div></a></div><div class="cart order sider-logo"><div class=cart-txt style=right:47px>我的订单<div class=jian>◆</div></div></div><div class="cart star sider-logo"><div class=cart-txt>我的收藏<div class=jian>◆</div></div></div><div class="cart zhuan sider-logo"><div class=cart-txt>转发<div class=jian>◆</div></div></div><div class="cart to-top sider-logo is-top"><div class=cart-txt>返回顶部<div class=jian>◆</div></div></div><script>$(function () {
+      let toTopBtn = $(".to-top");
+      let timer = null;
+      $(".cart").hover(function () {
+        $(this).find(".cart-txt").stop().animate({
+          right: "37px"
+        }, 300)
+      }, function () {
+        $(this).find(".cart-txt").stop().animate({
+          right: "47px"
+        }, 300)
+      })
+      $(window).scroll(function () {
+        if (scrollY == 0) {
+          toTopBtn.addClass("is-top");
+        } else {
+          toTopBtn.removeClass("is-top");
+        }
+      })
+      toTopBtn.click(function () {
+        let y = scrollY;
+        let speed = scrollY / 100;
+        speed = speed < 10 ? 10 : speed;
+        timer = setInterval(function () {
+          if (scrollY != 0) {
+            scrollBy(0, -speed);
+          } else {
+            clearInterval(timer);
+            timer = null;
+          }
+        }, 4)
+      })
+    })</script></div><main class=main><div class=banner><div class=swiper-container><div class=swiper-wrapper><div class=swiper-slide><img src=//images.s.cn/images/20200226/jd1.jpg alt=""></div><div class=swiper-slide><img src=//images.s.cn/images/20200226/jd2.jpg alt=""></div><div class=swiper-slide><img src=//images.s.cn/images/20200226/jd3.jpg alt=""></div><div class=swiper-slide><img src=//images.s.cn/images/20200226/jd4.jpg alt=""></div><div class=swiper-slide><img src=//images.s.cn/images/20200226/jd5.jpg alt=""></div></div><div class=swiper-pagination></div></div></div><div class="brand-img container"><img src=//img10.360buyimg.com/imgzone/jfs/t1/88977/34/7700/92016/5dfc81caEdbaceb58/4f24f324edb34f35.jpg alt="" usemap=#Map1><map name=Map1><area shape=rect coords=1134,266,1331,364 href=//www.s.cn/list/yaseshi target=_blank><area shape=rect coords=1386,251,1559,364 href=//www.s.cn/list/lining target=_blank><area shape=rect coords=362,111,548,237 href=//www.s.cn/list/nike target=_blank><area shape=rect coords=880,116,1041,236 href=//www.s.cn/list/puma target=_blank><area shape=rect coords=1151,115,1303,234 href=//www.s.cn/list/converse target=_blank><area shape=rect coords=1389,116,1557,227 href=//www.s.cn/list/originals target=_blank><area shape=rect coords=381,252,540,371 href=//www.s.cn/list/skechers target=_blank><area shape=rect coords=568,256,818,359 href=//www.s.cn/list/neo target=_blank><area shape=rect coords=612,115,781,233 href=//www.s.cn/list/adidas target=_blank><area shape=rect coords=882,262,1044,364 href=//www.s.cn/list/newbalance target=_blank></map></div><div class="hot-recommend container"><img src=//img10.360buyimg.com/imgzone/jfs/t1/86800/40/7940/531046/5e008387E42968bc4/51ff2cbf493d4195.jpg alt="" usemap=#Map2><map name=Map2><area shape=rect coords=485,160,706,459 href=//www.s.cn/adidas-AW3889.html target=_blank><area shape=rect coords=726,157,948,457 href=//www.s.cn/adidas-EE8374.html target=_blank><area shape=rect coords=968,152,1200,458 href=//www.s.cn/adidas-EG5708.html target=_blank><area shape=rect coords=1214,160,1444,459 href=//www.s.cn/adidas-EE9895.html target=_blank><area shape=rect coords=483,488,698,785 href=//www.s.cn/adidas-EG5949.html target=_blank><area shape=rect coords=726,489,953,786 href=//www.s.cn/originals-D98192.html target=_blank><area shape=rect coords=974,489,1189,786 href=//www.s.cn/nike-AT4404-004.html target=_blank><area shape=rect coords=1214,489,1441,783 href=//www.s.cn/nike-AO2810-110.html target=_blank><area shape=rect coords=483,811,703,1111 href=//www.s.cn/yaseshi-D507L-0152.html target=_blank><area shape=rect coords=729,814,948,1116 href=//www.s.cn/puma-37023001.html target=_blank><area shape=rect coords=967,819,1195,1113 href=//www.s.cn/puma-36692405.html target=_blank><area shape=rect coords=1214,810,1448,1112 href=//www.s.cn/puma-36521507.html target=_blank></map></div><div class="new container"><img src=//img10.360buyimg.com/imgzone/jfs/t1/104138/32/8066/533276/5e008386E4e760fd9/20732468992c4821.jpg alt="" usemap=#Map3><map name=Map3><area shape=rect coords=550,18,1439,157 href=//www.s.cn/list/ target=_blank><area shape=rect coords=483,194,701,494 href=//www.s.cn/adidas-G26160.html target=_blank><area shape=rect coords=723,192,959,489 href=//www.s.cn/adidas-EG4235.html target=_blank><area shape=rect coords=974,191,1188,489 href=//www.s.cn/neo-B42096.html target=_blank><area shape=rect coords=1211,185,1445,485 href=//www.s.cn/neo-FV2743.html target=_blank><area shape=rect coords=474,521,708,818 href=//www.s.cn/originals-B27140.html target=_blank><area shape=rect coords=721,518,948,817 href=//www.s.cn/originals-M20324.html target=_blank><area shape=rect coords=968,517,1189,818 href=//www.s.cn/originals-G27706.html target=_blank><area shape=rect coords=1206,518,1441,820 href=//www.s.cn/nike-CD0188-100.html target=_blank><area shape=rect coords=486,848,705,1142 href=//www.s.cn/nike-AV9370-106.html target=_blank><area shape=rect coords=727,846,953,1152 href=//www.s.cn/nike-AJ1285-109.html target=_blank><area shape=rect coords=970,845,1197,1146 href=//www.s.cn/puma-36521502.html target=_blank><area shape=rect coords=1215,848,1430,1146 href=//www.s.cn/puma-36498901.html target=_blank></map></div><div class="winter-clothing container"><img src=//img10.360buyimg.com/imgzone/jfs/t1/105367/14/7906/716393/5e008386E9006d55b/91307161d9c42370.jpg alt="" usemap=#Map4><map name=Map4><area shape=rect coords=498,27,1435,169 href=//www.s.cn/list/0c2-ap01_ap02 target=_blank><area shape=rect coords=485,216,953,548 href=//www.s.cn/adidas-CY8624.html target=_blank><area shape=rect coords=979,210,1442,542 href=//www.s.cn/adidas-DQ1461.html target=_blank><area shape=rect coords=483,575,706,878 href=//www.s.cn/adidas-EH3822.html target=_blank><area shape=rect coords=724,571,951,883 href=//www.s.cn/adidas-EH3803.html target=_blank><area shape=rect coords=968,575,1192,881 href=//www.s.cn/adidas-DQ3083.html target=_blank><area shape=rect coords=1215,580,1450,886 href=//www.s.cn/puma-58163970.html target=_blank><area shape=rect coords=482,898,711,1197 href=//www.s.cn/puma-59673932.html target=_blank><area shape=rect coords=726,901,953,1204 href=//www.s.cn/puma-58090201.html target=_blank><area shape=rect coords=965,897,1195,1202 href=//www.s.cn/adidas-DX3686.html target=_blank><area shape=rect coords=1208,903,1445,1206 href=//www.s.cn/adidas-DU0456.html target=_blank><area shape=rect coords=482,1223,709,1534 href=//www.s.cn/adidas-DU0468.html target=_blank><area shape=rect coords=723,1230,955,1536 href=//www.s.cn/puma-59598301.html target=_blank><area shape=rect coords=970,1234,1189,1529 href=//www.s.cn/puma-84373001.html target=_blank><area shape=rect coords=1212,1230,1438,1531 href=//www.s.cn/puma-58176601.html target=_blank></map></div><div class="hot-sell container"><img src=//img10.360buyimg.com/imgzone/jfs/t1/107885/11/1392/372176/5dfc80daEd3513f60/cfd1ccdcd05dfb41.jpg alt="" usemap=#Map5><map name=Map5><area shape=rect coords=353,183,628,510 href=//www.s.cn/list/0d1 target=_blank><area shape=rect coords=665,165,967,508 href=//www.s.cn/list/0c1-0d3_0d2_0d5 target=_blank><area shape=rect coords=984,150,1285,511 href=//www.s.cn/list/0d32_0d33_0d29_0d31 target=_blank><area shape=rect coords=1297,164,1621,509 href=//www.s.cn/virtual-2019Autumnupup.html target=_blank></map></div><div class="class-img container"><map name=Map1><area shape=rect coords=248,102,449,347 href=//www.s.cn/adidas-D96805.html target=_blank><area shape=rect coords=256,368,443,621 href=//www.s.cn/nike-749747-010.html target=_blank></map><img src=//img10.360buyimg.com/imgzone/jfs/t1/109763/32/1296/110172/5dfc80daE8d284471/51ffa4f7f2ade85f.jpg alt="" usemap=#Map6><map name=Map6><area shape=rect coords=850,344,974,395 href=//www.s.cn/list/0d5-0f2 target=_blank><area shape=rect coords=848,204,982,253 href=//www.s.cn/list/0c1-0d3_0d7_0d5_0d9_0d11_0d14_0d6_0d27_0d21_0d62_0d10-0f2_0f3 target=_blank><area shape=rect coords=571,345,670,397 href=//www.s.cn/list/0d13-0f1-ap01_ap02 target=_blank><area shape=rect coords=562,200,676,259 href=//www.s.cn/list/0d13-0f1-ap03 target=_blank><area shape=rect coords=851,271,950,324 href=//www.s.cn/list/0c1-0d2-0f2_0f3 target=_blank><area shape=rect coords=831,136,969,183 href=//www.s.cn/list/0c1-0d1-0f2_0f3 target=_blank><area shape=rect coords=565,272,775,333 href=//www.s.cn/list/0d30_0d32_0d33_0d29_0d31-0f1 target=_blank><area shape=rect coords=570,119,706,181 href=//www.s.cn/list/0d53_0d54-0f1 target=_blank><area shape=rect coords=408,342,535,404 href=//www.s.cn/list/0c1-0d4-0f1_0f3 target=_blank><area shape=rect coords=402,269,505,321 href=//www.s.cn/list/0c1-0d2-0f1_0f3 target=_blank><area shape=rect coords=396,195,536,254 href=//www.s.cn/list/0c1-0d3_0d2_0d7_0d5_0d8_0d9_0d11_0d14_0d15_0d6_0d27_0d62_0d81_0d10-0f1_0f3 target=_blank><area shape=rect coords=389,112,533,181 href=//www.s.cn/list/0d1-0f1 target=_blank><area shape=rect coords=1011,128,1155,185 href=//www.s.cn/list/0d53_0d19-0f2_0f3 target=_blank><area shape=rect coords=1014,200,1129,256 href=//www.s.cn/list/0d13-0f2_0f3-ap03 target=_blank><area shape=rect coords=1017,271,1217,330 href=//www.s.cn/list/0d30_0d32_0d33_0d29_0d31-0f2_0f3 target=_blank><area shape=rect coords=1021,342,1112,401 href=//www.s.cn/list/0d13-0f2_0f3-ap01_ap02 target=_blank><area shape=rect coords=1291,127,1418,189 href=//www.s.cn/list/0c1-ag3_ag2_ag1 target=_blank><area shape=rect coords=1293,199,1431,257 href=//www.s.cn/list/0c2-ag3_ag2_ag1 target=_blank><area shape=rect coords=1300,269,1450,339 href=//www.s.cn/list/0c3_0c4 target=_blank></map></div><div class=floors></div><div class="brand-img container"><img src=//img10.360buyimg.com/imgzone/jfs/t1/88977/34/7700/92016/5dfc81caEdbaceb58/4f24f324edb34f35.jpg alt="" usemap=#Map1><map name=Map1><area shape=rect coords=1134,266,1331,364 href=//www.s.cn/list/yaseshi target=_blank><area shape=rect coords=1386,251,1559,364 href=//www.s.cn/list/lining target=_blank><area shape=rect coords=362,111,548,237 href=//www.s.cn/list/nike target=_blank><area shape=rect coords=880,116,1041,236 href=//www.s.cn/list/puma target=_blank><area shape=rect coords=1151,115,1303,234 href=//www.s.cn/list/converse target=_blank><area shape=rect coords=1389,116,1557,227 href=//www.s.cn/list/originals target=_blank><area shape=rect coords=381,252,540,371 href=//www.s.cn/list/skechers target=_blank><area shape=rect coords=568,256,818,359 href=//www.s.cn/list/neo target=_blank><area shape=rect coords=612,115,781,233 href=//www.s.cn/list/adidas target=_blank><area shape=rect coords=882,262,1044,364 href=//www.s.cn/list/newbalance target=_blank></map></div></main><footer></footer></body></html>

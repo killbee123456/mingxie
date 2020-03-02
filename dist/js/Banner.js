@@ -1,0 +1,1 @@
+"use strict";var mySwiper=new Swiper(".swiper-container",{loop:!0,autoplay:{delay:1e3},pagination:{el:".swiper-pagination"}});
